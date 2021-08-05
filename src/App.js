@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
+  const url =
+    "https://coderadio-admin.freecodecamp.org/api/live/nowplaying/coderadio";
+  const [play, setPlay] = useState("");
+  const [previousList, setPreviousList] = useState();
+
+  const getData = async () => {
+    return axios
+      .get(url)
+      .then((res) => {
+        // console.log(res.data.station);
+        return res.data.station;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  useEffect(() => {
+    getData().then(({ listen_url }) => {
+      setPlay(listen_url);
+    });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <audio src={play} preload="true" controls={true}></audio>
     </div>
   );
 }
